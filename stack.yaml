@@ -1,0 +1,8 @@
+resolver: lts-14.6
+
+packages:
+- .
+    
+extra-deps:
+- git: https://github.com/mariatsji/language-dot
+  commit: 69bc96a81807443769b29e71779f2ae85d905797
