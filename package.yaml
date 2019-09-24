@@ -22,11 +22,12 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 - text
+- mtl
 
 library:
   source-dirs: src
   dependencies:
-  - attoparsec
+  - haskell-src-exts
   - language-dot
 
 executables:
@@ -39,6 +40,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - modulegraph
+    - directory
 
 tests:
   modulegraph-test:

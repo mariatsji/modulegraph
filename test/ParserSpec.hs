@@ -5,7 +5,6 @@ module  ParserSpec where
 
 import Test.Hspec
 import Data.Text (Text)
-import Data.Either
 import NeatInterpolation
 import SourceParser
 
@@ -28,8 +27,8 @@ testSource =
   |]
 
 spec :: Spec
-spec = do
-  describe "SourceParser" $ do
-    it "parses a module name" $ do
-      moduleName testSource `shouldSatisfy` isRight
+spec =
+  describe "SourceParser" $
+    it "parses a module name" $
+      moduleName testSource `shouldBe` Right "SourceParser"
       

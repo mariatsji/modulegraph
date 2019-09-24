@@ -1,19 +1,26 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SourceParser
-    ( moduleName
+    ( analyzeModule
     ) where
 
+import Language.Haskell.Exts
 import Data.Text (Text)
-import Data.Char (isSpace)
-import Control.Applicative
-import Data.Attoparsec.Text (Parser)
-import qualified Data.Attoparsec.Text as AT
+import qualified Data.Text as T
 
-data Mod a = Mod a [Mod a] deriving (Show, Eq)
+data Mod a = Mod a [a] deriving (Show, Eq)
 
-moduleParser :: Parser Text
-moduleParser = AT.skipSpace *> AT.string "module" *> AT.skipSpace *> AT.takeWhile (\c -> c /= '(' && not (isSpace c))
+analyzeModule :: FilePath -> IO (Either String (Mod Text))
+analyzeModule fp = fmap parseMod (parseFile fp)
+  
+parseMod :: ParseResult (Module SrcSpanInfo) -> Either String (Mod Text)
+parseMod (ParseOk (Module _ (Just (ModuleHead _ (ModuleName _ name') _ _)) _ imports _)) = Right (Mod (T.pack name') (parseImports imports))
+parseMod (ParseFailed e _) = Left (show e)
+parseMod x = Left $ "ParseOk but no module name found " <> show x
 
-moduleName :: Text -> Either String Text
-moduleName = AT.parseOnly moduleParser
+parseImports :: [ImportDecl SrcSpanInfo] -> [Text]
+parseImports = fmap (modNameToText . importModule)
+
+modNameToText :: ModuleName a -> Text
+modNameToText (ModuleName _ name') = T.pack name'
