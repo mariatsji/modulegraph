@@ -15,9 +15,10 @@ import Text.PrettyPrint (render)
 main :: IO ()
 main = do
   args <- getArgs
-  let dir = fromMaybe "." (listToMaybe args) <> "/src"
+  let dir = fromMaybe "." (listToMaybe args)
+  let dirs = [(<> "/src"), (<> "/app")] <*> [dir] :: [FilePath]
   when (null args) (putStrLn "Please give this program an aboslute directory not ending in slash as an argument")
-  fps <- findAllSourceFiles dir -- [Text]
+  fps <- join <$> forM dirs findAllSourceFiles
   eithers <- mapM analyzeModule fps -- analyze :: IO (Either String (Mod Text)).. so -> IO [Either String Text]
   case sequence eithers of -- Either String [Text]
     Left l -> putStrLn $ "error when analyzing : " <> l
