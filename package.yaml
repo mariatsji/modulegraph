@@ -41,6 +41,8 @@ executables:
     dependencies:
     - modulegraph
     - directory
+    - language-dot
+    - pretty
 
 tests:
   modulegraph-test:
@@ -52,5 +54,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - modulegraph
-    - neat-interpolation
     - hspec
+    - directory
